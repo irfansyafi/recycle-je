@@ -1,0 +1,8 @@
+virt
+.env
+.flaskenv
+database
+migrations
+scrape_data
+chromedriver-win64
+__pycache__
