@@ -5,14 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recycling Centers</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
-    <h1>Find Nearby Recycling Centers</h1>
-    <form id="search-form">
-        <input type="text" id="address" placeholder="Enter your address" required>
-        <button type="submit">Search</button>
-    </form>
-    <div id="results"></div>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <h1>Recycling Centers</h1>
+    <div id="map" style="height: 500px;"></div> <!-- Map div -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Center Name</th>
+                <th>Address</th>
+                <th>Categories</th>
+                <th>Phone Number</th>
+                <th>Operating Hours</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for center in centers %}
+            <tr>
+                <td>{{ center.center_name }}</td>
+                <td>{{ center.address }}</td>
+                <td>{{ center.categories }}</td>
+                <td>{{ center.phone_number }}</td>
+                <td>{{ center.operating_hours }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script>
+        // Injecting JSON data from Flask into JavaScript
+        var centers = {{ centers | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script> <!-- Link to external JS -->
 </body>
 </html>

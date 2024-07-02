@@ -8,7 +8,7 @@ from geopy.distance import geodesic
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite://database/recycling_centers.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///database/recycling_centers.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Create the SQLAlchemy db instance
@@ -19,17 +19,20 @@ migrate = Migrate(app, db)
 
 # Define a model
 class RecyclingCenter(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
-    center_name = db.Column(db.String(100), nullable = False)
-    address = db.Column(db.String(300), nullable = False)
-    latitude = db.Column(db.Float, nullable = False)
-    longitude = db.Column(db.Float, nullable = False)
-    categories = db.Column(db.String(200),nullable = False)
+    id = db.Column(db.Integer, primary_key=True)
+    center_name = db.Column(db.String(120), nullable=False)
+    address = db.Column(db.String(300), nullable=False)
+    categories = db.Column(db.String(300), nullable=False)
+    phone_number = db.Column(db.String(20))
+    operating_hours = db.Column(db.String(50))
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
 
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    centers = RecyclingCenter.query.all()
+    return render_template('index.html', centers=centers)
 
 @app.route('/api/search')
 def search_centers():
