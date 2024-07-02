@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import sqlite3 
 
 from geopy.distance import geodesic
 
@@ -12,7 +13,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = r'sqlite:///database/recycling_centers.d
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Create the SQLAlchemy db instance
-
 # Create the SQLAlchemy db instance
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)

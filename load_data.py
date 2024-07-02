@@ -6,7 +6,7 @@ from recycle_app import db, RecyclingCenter
 geolocator = Nominatim(user_agent="recycling_locator")
 
 # Load data
-df = pd.read_csv('malaysia_recycling_centers.csv')
+df = pd.read_csv('scrape_data\malaysia_recycling_centers.csv')
 
 # Geocode addresses
 latitudes = []
