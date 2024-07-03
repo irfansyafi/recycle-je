@@ -37,7 +37,7 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
         // Injecting JSON data from Flask into JavaScript
-        var centers = {{ centers | tojson }};
+        {{ centers | tojson | safe }};
     </script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script> <!-- Link to external JS -->
 </body>
