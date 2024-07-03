@@ -1,33 +1,23 @@
 // scripts.js
 
-// Initialize and add the map
+// Initialize and add the Leaflet map
 function initMap() {
-    // The location of Malaysia
-    var malaysia = { lat: 4.2105, lng: 101.9758 };
-    var map = new google.maps.Map(document.getElementById('map'),{
-        zoom: 6,
-        center: malaysia
-    });
+    var map = L.map('map').setView([4.2105, 101.9758], 6); // Coordinates for Malaysia
+
+    // Add the OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
     // The data from the Flask view
-    var centers = JSON.parse('{{ centers | tojson | safe }}');
+    var centers = JSON.parse(document.getElementById('centers-data').textContent);
 
     // Loop through the centers and place a marker for each
     centers.forEach(function(center) {
-        var position = { lat: center.latitude, lng: center.longitude };
-        var marker = new google.maps.Marker({
-            position: position,
-            map: map,
-            title: center.center_name
-        });
-
-        var infowindow = new google.maps.InfoWindow({
-            content: `<h4>${center.center_name}</h4><p>${center.address}</p>`
-        });
-
-        marker.addListener('click', function() {
-            infowindow.open(map, marker);
-        });
+        var position = [center.latitude, center.longitude];
+        var marker = L.marker(position).addTo(map)
+            .bindPopup(`<h4>${center.center_name}</h4><p>${center.address}</p>`)
+            .openPopup();
     });
 }
 
@@ -64,3 +54,6 @@ function filterCenters() {
 document.getElementById('search').addEventListener('input', filterCenters);
 document.getElementById('category').addEventListener('change', filterCenters);
 document.getElementById('state').addEventListener('change', filterCenters);
+
+// Call the initMap function to initialize the map
+initMap();
