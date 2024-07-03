@@ -15,6 +15,7 @@ migrate = Migrate(app, db)
 
 # Define a model
 class RecyclingCenter(db.Model):
+    __tablename__ = 'recycling_center'
     id = db.Column(db.Integer, primary_key=True)
     center_name = db.Column(db.String(120), nullable=False)
     address = db.Column(db.String(300), nullable=False)
@@ -24,11 +25,28 @@ class RecyclingCenter(db.Model):
     latitude = db.Column(db.Float)
     longitude = db.Column(db.Float)
 
-
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'center_name': self.center_name,
+            'address': self.address,
+            'categories': self.categories,
+            'phone_number': self.phone_number,
+            'operating_hours': self.operating_hours,
+            'latitude': self.latitude,
+            'longitude': self.longitude
+        }
+        
 @app.route('/')
 def index():
+    # Query all recycling centers
     centers = RecyclingCenter.query.all()
-    return render_template('index.html', centers=centers)
+    
+    # Convert each RecyclingCenter object to a dictionary
+    centers_dicts = [center.as_dict() for center in centers]
+    
+    # Pass the list of dictionaries to the template
+    return render_template('index.html', centers=centers_dicts)
 
 @app.route('/api/search')
 def search_centers():
