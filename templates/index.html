@@ -4,42 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recycling Centers</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
-    <h1>Recycling Centers</h1>
-    <div id="map" style="height: 500px;"></div> <!-- Map div -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center">Recycling Centers</h1>
+                <div id="map"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="listing">
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="text" class="form-control" id="search" placeholder="Search...">
+                        </div>
+                        <div class="col">
+                            <select class="form-control" id="category">
+                                <option value="">Select Category</option>
+                                <!-- Add categories dynamically or manually -->
+                            </select>
+                        </div>
+                        <div class="col">
+                            <select class="form-control" id="state">
+                                <option value="">Select State</option>
+                                <!-- Add states dynamically or manually -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="center-list">
+                    {% for center in centers %}
+                    <div class="center-card">
+                        <h3>{{ center.center_name }}</h3>
+                        <p>{{ center.address }}</p>
+                        <p><strong>Categories:</strong> {{ center.categories }}</p>
+                        <p><strong>Phone Number:</strong> {{ center.phone_number }}</p>
+                        <p><strong>Operating Hours:</strong> {{ center.operating_hours }}</p>
+                        <p><strong>Type:</strong> {{ 'Recovery Facility' if 'recovery' in center.categories.lower() else 'Collection Center' }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Center Name</th>
-                <th>Address</th>
-                <th>Categories</th>
-                <th>Phone Number</th>
-                <th>Operating Hours</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for center in centers %}
-            <tr>
-                <td>{{ center.center_name }}</td>
-                <td>{{ center.address }}</td>
-                <td>{{ center.categories }}</td>
-                <td>{{ center.phone_number }}</td>
-                <td>{{ center.operating_hours }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-        // Injecting JSON data from Flask into JavaScript
-        const centers = {{ centers | tojson | safe }};
-        console.log(centers);
-    </script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script> <!-- Link to external JS -->
+    <!-- Google Maps JavaScript API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 </body>
 </html>
