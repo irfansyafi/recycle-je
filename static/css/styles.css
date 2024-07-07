@@ -1,17 +1,62 @@
 /* styles.css */
 
-#map {
-    height: 500px;
-    width: 100%;
+/* General styling for better spacing */
+.container-fluid {
+    padding: 20px;
 }
 
-.listing {
-    margin-top: 20px;
+#map {
+    height: 400px;
+    margin-bottom: 20px;
 }
 
 .center-card {
-    margin-bottom: 15px;
-    padding: 15px;
+    background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.center-card h3 {
+    margin-top: 0;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination a {
+    margin: 0 5px;
+    padding: 10px 15px;
+    border-radius: 5px;
+}
+
+.pagination a.active {
+    background-color: #007bff;
+    color: white;
+}
+
+.pagination a.disabled {
+    pointer-events: none;
+    color: #ccc;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #e9ecef;
+}
+
+/* Center title and logo */
+.home-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.logo {
+    height: 40px;
+    vertical-align: middle;
+    margin-right: 10px;
 }
