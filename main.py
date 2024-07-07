@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-import routes  # This will register the routes
+import routes # This is necessary needed, to register the routes to Flask. Honestly, I don't know why but it works.
 
 if __name__ == '__main__':
     
