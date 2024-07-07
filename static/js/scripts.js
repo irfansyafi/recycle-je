@@ -1,59 +1,117 @@
 // scripts.js
 
-// Initialize and add the Leaflet map
-function initMap() {
-    var map = L.map('map').setView([4.2105, 101.9758], 6); // Coordinates for Malaysia
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize the map
+    const map = L.map('map').setView([4.2105, 101.9758], 6); // Centered on Malaysia
 
-    // Add the OpenStreetMap tiles
+    // Add a tile layer to the map (OpenStreetMap tiles)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    // The data from the Flask view
-    var centers = JSON.parse('{{ centers | tojson | safe }}');
+    // Get the centers data from the HTML template
+    const centersData = JSON.parse(document.getElementById('centers-data').textContent);
 
-    // Loop through the centers and place a marker for each
-    centers.forEach(function(center) {
-        var position = [center.latitude, center.longitude];
-        var marker = L.marker(position).addTo(map)
-            .bindPopup(`<h4>${center.center_name}</h4><p>${center.address}</p>`)
-            .openPopup();
-    });
-}
+    // Function to add markers to the map
+    function addMarkers(centers) {
+        centers.forEach(center => {
+            const marker = L.marker([center.latitude, center.longitude]).addTo(map);
+            marker.bindPopup(`
+                <strong>${center.center_name}</strong><br>
+                ${center.address}<br>
+                Categories: ${center.categories}<br>
+                Phone: ${center.phone_number}<br>
+                Hours: ${center.operating_hours}
+            `);
+        });
+    }
 
-// Filter centers based on input
-function filterCenters() {
-    var search = document.getElementById('search').value.toLowerCase();
-    var category = document.getElementById('category').value.toLowerCase();
-    var state = document.getElementById('state').value.toLowerCase();
+    // Add initial markers
+    addMarkers(centersData);
 
-    var centers = document.querySelectorAll('.center-card');
-    centers.forEach(function(center) {
-        var name = center.querySelector('h3').textContent.toLowerCase();
-        var address = center.querySelector('p').textContent.toLowerCase();
-        var categories = center.querySelectorAll('p')[1].textContent.toLowerCase();
-        var visible = true;
+    // Filter functionality
+    const searchInput = document.getElementById('search');
+    const categorySelect = document.getElementById('category');
+    const stateSelect = document.getElementById('state');
 
-        if (search && !name.includes(search) && !address.includes(search)) {
-            visible = false;
+    function filterCenters() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedCategory = categorySelect.value.toLowerCase();
+        const selectedState = stateSelect.value.toLowerCase();
+
+        const filteredCenters = centersData.filter(center => {
+            const matchesSearch = center.center_name.toLowerCase().includes(searchTerm);
+            const matchesCategory = selectedCategory === "" || center.categories.toLowerCase().includes(selectedCategory);
+            const matchesState = selectedState === "" || center.address.toLowerCase().includes(selectedState);
+
+            return matchesSearch && matchesCategory && matchesState;
+        });
+
+        // Clear existing markers
+        map.eachLayer(layer => {
+            if (layer instanceof L.Marker) {
+                map.removeLayer(layer);
+            }
+        });
+
+        // Add filtered markers
+        addMarkers(filteredCenters);
+    }
+
+    // Attach event listeners to filter inputs
+    searchInput.addEventListener('input', filterCenters);
+    categorySelect.addEventListener('change', filterCenters);
+    stateSelect.addEventListener('change', filterCenters);
+
+    // Pagination handling
+    function updatePagination(currentPage, totalPages) {
+        const paginationContainer = document.querySelector('.pagination');
+        paginationContainer.innerHTML = ''; // Clear existing pagination
+
+        const createButton = (page, text, disabled = false) => {
+            const button = document.createElement('a');
+            button.href = `?page=${page}`;
+            button.className = 'btn btn-primary mx-1';
+            button.textContent = text;
+            if (disabled) {
+                button.classList.add('disabled');
+                button.style.pointerEvents = 'none';
+            }
+            return button;
+        };
+
+        // Previous button
+        if (currentPage > 1) {
+            paginationContainer.appendChild(createButton(currentPage - 1, 'Previous'));
         }
 
-        if (category && !categories.includes(category)) {
-            visible = false;
+        // Page numbers
+        const maxPagesToShow = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+        let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+        if (endPage - startPage < maxPagesToShow - 1) {
+            startPage = Math.max(1, endPage - maxPagesToShow + 1);
         }
 
-        if (state && !address.includes(state)) {
-            visible = false;
+        for (let page = startPage; page <= endPage; page++) {
+            const pageButton = createButton(page, page, page === currentPage);
+            if (page === currentPage) {
+                pageButton.classList.add('active');
+            }
+            paginationContainer.appendChild(pageButton);
         }
 
-        center.style.display = visible ? 'block' : 'none';
-    });
-}
+        // Next button
+        if (currentPage < totalPages) {
+            paginationContainer.appendChild(createButton(currentPage + 1, 'Next'));
+        }
+    }
 
-// Event listeners for filters
-document.getElementById('search').addEventListener('input', filterCenters);
-document.getElementById('category').addEventListener('change', filterCenters);
-document.getElementById('state').addEventListener('change', filterCenters);
+    // Get current page and total pages from HTML data
+    const currentPage = parseInt(document.getElementById('current-page').textContent, 10);
+    const totalPages = parseInt(document.getElementById('total-pages').textContent, 10);
 
-// Call the initMap function to initialize the map
-initMap();
+    // Update pagination on page load
+    updatePagination(currentPage, totalPages);
+});
