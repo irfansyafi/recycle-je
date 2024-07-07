@@ -1,7 +1,8 @@
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderServiceError, GeocoderTimedOut
 import pandas as pd
-from main import app, db, RecyclingCenter  # Adjust the import according to your app structure
+from main import app, db
+from models import RecyclingCenter
 import time
 import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed

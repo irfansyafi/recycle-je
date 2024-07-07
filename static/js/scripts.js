@@ -10,7 +10,7 @@ function initMap() {
     }).addTo(map);
 
     // The data from the Flask view
-    var centers = JSON.parse(document.getElementById('centers-data').textContent);
+    var centers = JSON.parse('{{ centers | tojson | safe }}');
 
     // Loop through the centers and place a marker for each
     centers.forEach(function(center) {
