@@ -21,8 +21,8 @@
                 </a>
             </h1>
         </header>
-        <div id="map" class="mb-4"></div>
-        
+        <div id="map" class="mb-4" style="height: 300px;"></div>
+
         <div class="row mb-3">
             <div class="col-md-4">
                 <input type="text" class="form-control" id="search" placeholder="Search...">
@@ -55,26 +55,30 @@
             </div>
             {% endfor %}
         </div>
+
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
-                {% if current_page > 1 %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ current_page - 1 }}">Previous</a>
-                    </li>
-                {% endif %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
                 {% for page_num in range(1, total_pages + 1) %}
                     <li class="page-item {% if page_num == current_page %}active{% endif %}">
                         <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
                     </li>
                 {% endfor %}
-                {% if current_page < total_pages %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ current_page + 1 }}">Next</a>
-                    </li>
-                {% endif %}
+                <li class="page-item">
+                    <a class="page-link" href="#">Next</a>
+                </li>
             </ul>
         </nav>
     </div>
+
+    <!-- Hidden elements to store pagination info -->
+    <div id="pagination-data" style="display: none;">
+        <span id="current-page">{{ current_page }}</span>
+        <span id="total-pages">{{ total_pages }}</span>
+    </div>
+
     <!-- Leaflet JavaScript -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <!-- Custom JavaScript -->

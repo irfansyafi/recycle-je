@@ -1,5 +1,3 @@
-/* styles.css */
-
 /* General styling for better spacing */
 .container-fluid {
     padding: 20px;
@@ -16,37 +14,11 @@
     border-radius: 5px;
     padding: 15px;
     margin-bottom: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .center-card h3 {
     margin-top: 0;
-}
-
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.pagination a {
-    margin: 0 5px;
-    padding: 10px 15px;
-    border-radius: 5px;
-}
-
-.pagination a.active {
-    background-color: #007bff;
-    color: white;
-}
-
-.pagination a.disabled {
-    pointer-events: none;
-    color: #ccc;
-}
-
-.pagination a:hover:not(.active) {
-    background-color: #e9ecef;
 }
 
 /* Center title and logo */
@@ -59,4 +31,53 @@
     height: 40px;
     vertical-align: middle;
     margin-right: 10px;
+}
+
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination .page-item {
+    margin: 0 5px;
+}
+
+.pagination .page-link {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.pagination .page-item.disabled .page-link {
+    pointer-events: none;
+    color: #ccc;
+}
+
+.pagination .page-link:hover:not(.active) {
+    background-color: #e9ecef;
+}
+
+.pagination span {
+    padding: 10px 15px;
+    color: #ccc;
+}
+
+/* Ensure pagination looks good on smaller screens */
+@media (max-width: 600px) {
+    .pagination a {
+        padding: 5px 10px;
+        margin: 0 2px;
+    }
 }
